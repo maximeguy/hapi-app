@@ -7,26 +7,26 @@ module.exports = function(grunt) {
 
 		watch: {
 			files: [
-				'styl/*.styl',
-				'*.html'
+				'static/stylus/*.styl',
+				'app/view/*.html'
 			],
 			tasks: ['stylus'],
-		    options: {
-		    	livereload: true,
-		    }
+			options: {
+				livereload: true,
+			}
 		},
 
 		connect: {
-		    serve: {
-		      options: {
-		        port: 8000,
-		        base: '.',
-		        hostname: '0.0.0.0',
-		        protocol: 'http',
-		        livereload: true,
-		        open: true,
-		      }
-		    }
+			serve: {
+				options: {
+					port: 8000,
+					base: '.',
+					hostname: '0.0.0.0',
+					protocol: 'http',
+					livereload: true,
+					open: true,
+				}
+			}
 		},
 
 		stylus: {
@@ -43,27 +43,26 @@ module.exports = function(grunt) {
 					]
 				},
 				files: {
-					'css/style.css': 'styl/*.styl'
+					'static/css/style.css': 'static/stylus/*.styl'
 				}
 			}
 		},
 
 		postcss: {
-		    options: {
+			options: {
 
-		      processors: [
-		        require('pixrem')(), // add fallbacks for rem units
-		        require('autoprefixer')({browsers: 'last 2 versions'}), // add vendor prefixes
-		        require('cssnano')() // minify the result
-		      ]
-		    },
-		    dist: {
-		      src: 'css/*.css'
-		    }
-  		}
+				processors: [
+					require('pixrem')(), // add fallbacks for rem units
+					require('autoprefixer')({browsers: 'last 2 versions'}), // add vendor prefixes
+					require('cssnano')() // minify the result
+				]
+			},
+			dist: {
+				src: 'static/css/*.css'
+			}
+		}
 	});
 
 	// Load grunt plugins.
 	require('load-grunt-tasks')(grunt);
-	grunt.registerTask('serve', ['connect','watch']);
 };
