@@ -1,68 +1,132 @@
 module.exports = function(grunt) {
 
-	// Project configuration.
-	grunt.initConfig({
+    // Project configuration.
+    grunt.initConfig({
 
-		pkg: grunt.file.readJSON('package.json'),
+        pkg: grunt.file.readJSON('package.json'),
 
-		watch: {
-			files: [
-				'static/stylus/*.styl',
-				'app/view/*.html'
-			],
-			tasks: ['stylus'],
-			options: {
-				livereload: true,
-			}
-		},
+        watch: {
+            stylus: {
+                files: [
+					'static/styl/*.styl'
+				],
+                tasks: ['stylus'],
+                options: {
+                    livereload: true
+                }
+            },
+            js: {
+                files: [
+					'app/**/*.js',
+					'static/js/**/*.js'
 
-		connect: {
-			serve: {
-				options: {
-					port: 8000,
-					base: '.',
-					hostname: '0.0.0.0',
-					protocol: 'http',
-					livereload: true,
-					open: true,
-				}
-			}
-		},
+				],
+                options: {
+                    livereload: true
+                }
+            }
+        },
 
-		stylus: {
-			compile: {
-				options: {
-					compress: false,
-					paths: [
+        stylus: {
+            compile: {
+                options: {
+                    compress: false,
+                    paths: [
 						'node_modules'
 					],
-					import:[
+                    import: [
 						'stylus/lib/functions/index.styl',
 						'jeet/stylus/jeet/index.styl',
 						'rupture/rupture/index.styl'
 					]
-				},
-				files: {
-					'static/css/style.css': 'static/stylus/*.styl'
-				}
-			}
-		},
+                },
+                files: {
+                    'static/css/style.css': 'static/stylus/*.styl'
+                }
+            }
+        },
 
-		postcss: {
-			options: {
+        jsbeautifier: {
+            files: [
+				"Gruntfile.js",
+				"app/*.js",
+				"app/model/*.js",
+				"app/controller/*.js",
+				"static/js/**/*.js",
+				"app/view/helpers/*.js",
+				"app/view/**/*.html",
+				"static/css/style.css"
+			],
+            options: {
+                html: {
+                    braceStyle: "collapse",
+                    indentChar: " ",
+                    indentSize: 4,
+                    maxPreserveNewlines: 3,
+                    preserveNewlines: true
+                },
+                css: {
+                    indentChar: " ",
+                    indentSize: 4
+                },
+                js: {
+                    braceStyle: "collapse",
+                    breakChainedMethods: true,
+                    indentLevel: 0,
+                    indentSize: 4,
+                    indentWithTabs: false,
+                    keepArrayIndentation: true,
+                    keepFunctionIndentation: false,
+                    maxPreserveNewlines: 3,
+                    preserveNewlines: true,
+                    spaceBeforeConditional: true
+                }
+            }
+        },
 
-				processors: [
+
+        concat: {
+            options: {
+                separator: ';\n'
+            },
+            dist: {
+                src: ['static/js/*.js'],
+                dest: 'static/js/build.js'
+            }
+        },
+
+        uglify: {
+            options: {
+                mangle: false
+            },
+            target: {
+                files: {
+                    'static/js/build.min.js': ['static/js/build.js']
+                }
+            }
+        },
+
+        postcss: {
+            options: {
+                processors: [
 					require('pixrem')(), // add fallbacks for rem units
-					require('autoprefixer')({browsers: 'last 2 versions'}), // add vendor prefixes
+					require('autoprefixer')({
+                        browsers: 'last 2 versions'
+                    }), // add vendor prefixes
 					require('cssnano')() // minify the result
 				]
-			},
-			dist: {
-				src: 'static/css/*.css'
-			}
-		}
-	});
+            },
+            dist: {
+                src: 'static/css/*.css'
+            }
+        }
+    });
 
-	// Load grunt plugins.
-	require('load-grunt-tasks')(grunt);
+    grunt.registerTask('build', [
+		'concat',
+		'uglify',
+		'postcss'
+	]);
+
+    require('load-grunt-tasks')(grunt);
 };

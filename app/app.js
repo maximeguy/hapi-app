@@ -1,6 +1,7 @@
 'use strict';
 
-var Join = require('path').join,
+var Join = require('path')
+    .join,
     //Mongoose = require('mongoose'),
     //Db = require('./database'),
     Hapi = require('hapi'),
@@ -30,13 +31,19 @@ server.register(
             options: {
                 reporters: [{
                     reporter: require('good-console'),
-                    events: { request: '*', log: '*', response: '*', 'error': '*' }
+                    events: {
+                        request: '*',
+                        log: '*',
+                        response: '*',
+                        'error': '*'
+                    }
                 }]
             }
         },
         Inert,
         Vision
-    ], function(err) {
+    ],
+    function(err) {
         if (err) {
             console.error('Failed to load a plugin:', err);
         }
@@ -52,7 +59,8 @@ server.register(
             helpersPath: Join(__dirname, 'view/helpers')
         });
 
-        server.route(require('./routes').endpoints);
+        server.route(require('./routes')
+            .endpoints);
     });
 
 // Start Server
